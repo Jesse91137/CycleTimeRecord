@@ -186,6 +186,8 @@
       <DependentUpon>CycleTimeDb.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\Db.cs" />
+    <Compile Include="Models\Mark.cs" />
+    <Compile Include="Models\MEmark.cs" />
     <Compile Include="Models\MemberMaintain.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\MemberViewModels.cs" />
@@ -245,6 +247,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\PagedList.css" />
+    <Content Include="Content\select2-4.0.8.select2.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -286,6 +289,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\select2-4.0.8.select2.min.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

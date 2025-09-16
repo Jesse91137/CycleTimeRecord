@@ -31,5 +31,10 @@ namespace CycleTimeRecord.Models
         public string reason { get; set; }
         public Nullable<int> OP_Cnt { get; set; }
         public string MEmark { get; set; }
+
+        /// <summary>
+        /// ME確認原因補充
+        /// </summary>
+        public string MEmarkAdd { get; set; }
     }
 }

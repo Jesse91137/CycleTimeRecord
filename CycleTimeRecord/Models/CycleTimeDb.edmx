@@ -36,6 +36,7 @@
           <Property Name="reason" Type="nvarchar" MaxLength="100" />
           <Property Name="OP_Cnt" Type="int" />
           <Property Name="MEmark" Type="nvarchar" MaxLength="100" />
+          <Property Name="MEmarkAdd" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="CT_Member">
           <Key>
@@ -122,6 +123,7 @@
           <Property Name="reason" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="OP_Cnt" Type="Int32" />
           <Property Name="MEmark" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="MEmarkAdd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -164,6 +166,7 @@
           <EntitySetMapping Name="CT_LineWork">
             <EntityTypeMapping TypeName="CycleTimeRecordDb.CT_LineWork">
               <MappingFragment StoreEntitySet="CT_LineWork">
+                <ScalarProperty Name="MEmarkAdd" ColumnName="MEmarkAdd" />
                 <ScalarProperty Name="MEmark" ColumnName="MEmark" />
                 <ScalarProperty Name="OP_Cnt" ColumnName="OP_Cnt" />
                 <ScalarProperty Name="reason" ColumnName="reason" />

@@ -9,36 +9,103 @@ using System.Data.SqlClient;
 
 namespace CycleTimeRecord.Models
 {
+
+    /// <summary>
+    /// 
+    /// </summary>
     public class CTWorks
     {
+        /// <summary>
+        /// DB操作
+        /// </summary>
         private readonly CycleTimeRecordEntities db;
+        /// <summary>
+        /// 創建一個QueryServiceAMES.QueryServiceSoapClient對象
+        /// 用於與Web服務進行通信，通過SOAP協定發送和接收消息
+        /// </summary>        
         QueryServiceAMES.QueryServiceSoapClient Rv = new QueryServiceAMES.QueryServiceSoapClient();
+        /// <summary>
+        /// 用於與一個Web服務進行通信，該Web服務是通過SOAP協定實現的
+        /// </summary>
         TransferServiceAMES.TransferServiceSoapClient Tx = new TransferServiceAMES.TransferServiceSoapClient();
+        /// <summary>
+        /// 用於與Web服務進行通信，通過SOAP協定發送和接收消息
+        /// </summary>
         ProcessServiceAMES.ProcessServiceSoapClient Proc = new ProcessServiceAMES.ProcessServiceSoapClient();
 
+        /// <summary>
+        /// 用於與Web服務進行通信，通過SOAP協定發送和接收消息
+        /// </summary>
+        /// <param name="dbContext"></param>
         public CTWorks(CycleTimeRecordEntities dbContext)
         {
             db = dbContext;
             CT_DataLists = new List<CT_DataList>();
         }
+        /// <summary>
+        /// 線別
+        /// </summary>
         public string LNX { get; set; }
+        /// <summary>
+        /// 取得CT_DataList資料
+        /// </summary>
         public List<CT_DataList> CT_DataLists { get; set; }
+        /// <summary>
+        /// CT_DataList
+        /// </summary>
         public class CT_DataList
         {
+            /// <summary>
+            /// 
+            /// </summary>
             public int Sno { get; set; }
+            /// <summary>
+            /// 線別
+            /// </summary>
             public string Line { get; set; }
+            /// <summary>
+            /// 機種名稱
+            /// </summary>
             public string EngSr { get; set; }
+            /// <summary>
+            /// 板面
+            /// </summary>
             public string T_B { get; set; }
+            /// <summary>
+            /// 板數
+            /// </summary>
             public int BoardSum { get; set; }
+            /// <summary>
+            /// 瓶頸工時
+            /// </summary>
             public decimal BottleneckHours { get; set; }
+            /// <summary>
+            /// 日期
+            /// </summary>
             public DateTime Date { get; set; }
             public double Other { get; set; }
+            /// <summary>
+            /// 原因
+            /// </summary>
             public string Mark { get; set; }
             public double Text1 { get; set; }
             public double Text2 { get; set; }
             public double Text3 { get; set; }
+            /// <summary>
+            /// 姓名
+            /// </summary>
             public string fName { get; set; }
+            /// <summary>
+            /// ME確認原因標記
+            /// </summary>
             public string ME_mark { get; set; }
+            /// <summary>
+            /// ME確認原因補充
+            /// </summary>
+            public string MEmarkAdd { get; set; }
+            /// <summary>
+            /// 標準人數
+            /// </summary>
             public int OP_Cnt { get; set; }
         }
         public class StdWTimeData
@@ -46,26 +113,30 @@ namespace CycleTimeRecord.Models
             public string ITEM_NO { get; set; }
             public double CT { get; set; }
             public double TOTAL_CT { get; set; }
-            public double  FIRST_TIME { get; set; }
+            public double FIRST_TIME { get; set; }
             public int OP_CNT { get; set; }
             public double MACHINE_CNT { get; set; }
             public string MEMO { get; set; }
             public string UNIT_NO { get; set; }
             public int LINE_ID { get; set; }
-            public int  STATION_ID { get; set; }
+            public int STATION_ID { get; set; }
             public string SIDE { get; set; }
         }
         #region 頁面顯示
+        /// <summary>
+        /// 標準工時作業下半部資料取得
+        /// </summary>
+        /// <returns></returns>
         public List<CT_DataList> CT_LineDatas()
         {
             var dataList = from lineWork in db.CT_LineWork
                            join member in db.CT_Member on lineWork.UserID equals member.fUserId into memberJoin
                            from member in memberJoin.DefaultIfEmpty()
-                           where lineWork.flag==false
+                           where lineWork.flag == false
                            orderby lineWork.Date descending
                            select new CT_DataList
                            {
-                               Sno=lineWork.sno,
+                               Sno = lineWork.sno,
                                Line = lineWork.Line,
                                EngSr = lineWork.EngSr,
                                T_B = lineWork.T_B,
@@ -75,7 +146,8 @@ namespace CycleTimeRecord.Models
                                Mark = lineWork.Mark,
                                fName = member != null ? member.fName : null,
                                OP_Cnt = (int)lineWork.OP_Cnt,
-                               ME_mark = lineWork.MEmark
+                               ME_mark = lineWork.MEmark+ lineWork.MEmarkAdd??"",// ME確認原因+ME確認原因補充 20250527 By Jesse 
+                               MEmarkAdd =lineWork.MEmarkAdd                               
                            };
 
             //CT_DataLists.AddRange(dataList.ToList());
@@ -86,10 +158,17 @@ namespace CycleTimeRecord.Models
         #endregion
 
         #region AJAXQuery 隨查隨顯
-        public List<CT_DataList> CT_LineDataAj(string LNX, string engSr,string TB)
+        /// <summary>
+        /// 線別 & 機種名稱 & 板面 有都值才查詢 - 隨查隨顯
+        /// </summary>
+        /// <param name="LNX">線別</param>
+        /// <param name="engSr">機種名稱</param>
+        /// <param name="TB">板面</param>
+        /// <returns></returns>
+        public List<CT_DataList> CT_LineDataAj(string LNX, string engSr, string TB)
         {
-            var datas = db.CT_LineWork.Where(o => o.Line == LNX && o.EngSr == engSr && o.T_B == TB && o.flag==false)
-                .OrderByDescending(x=>x.Date).ToList();
+            var datas = db.CT_LineWork.Where(o => o.Line == LNX && o.EngSr == engSr && o.T_B == TB && o.flag == false)
+                .OrderByDescending(x => x.Date).ToList();
 
             foreach (var data in datas)
             {
@@ -104,10 +183,11 @@ namespace CycleTimeRecord.Models
                     Text1 = (double)data.Text1,
                     Text2 = (double)data.Text2,
                     Text3 = (double)data.Text3,
-                    Other=(double)data.Other,
-                    Mark=data.Mark,
+                    Other = (double)data.Other,
+                    Mark = data.Mark,
                     OP_Cnt = (int)data.OP_Cnt,
-                    ME_mark = data.MEmark
+                    ME_mark = data.MEmark,
+                    MEmarkAdd=data.MEmarkAdd // ME確認原因補充 20250527 By Jesse
                 };
                 CT_DataLists.Add(ctData);
             }
@@ -116,11 +196,20 @@ namespace CycleTimeRecord.Models
         #endregion
 
         #region 一般查詢
-        public List<CT_DataList> CT_LineDatas(string engSr,string line,string TB, DateTime? indate,DateTime? indate2)
+        /// <summary>
+        /// 一般查詢
+        /// </summary>
+        /// <param name="engSr">機種名稱</param>
+        /// <param name="line">線別</param>
+        /// <param name="TB">板面</param>
+        /// <param name="indate">日期起</param>
+        /// <param name="indate2">日期迄</param>
+        /// <returns></returns>
+        public List<CT_DataList> CT_LineDatas(string engSr, string line, string TB, DateTime? indate, DateTime? indate2)
         {
             var query = db.CT_LineWork
                                 .Where(lineWork => lineWork.flag == false);
-
+          
             if (!string.IsNullOrEmpty(engSr))
             {
                 query = query.Where(lineWork => lineWork.EngSr == engSr);
@@ -138,46 +227,56 @@ namespace CycleTimeRecord.Models
 
             if (indate.HasValue && indate2.HasValue)
             {
-                query = query.Where(lineWork => lineWork.Date >= indate.Value && lineWork.Date <= indate2.Value);
+                query = query.Where(lineWork => lineWork.Date >= indate.Value && lineWork.Date <= indate2.Value);                        
             }
-            if (indate2.HasValue)
-            {
-                query = query.Where(lineWork => lineWork.Date >= indate2.Value);
-            }
-            // 如果需要篩選 indate 與 indate2，可如下操作：
-            //if (indate.HasValue)
-            //{
-            //    ctDataList = ctDataList.Where(x => x.Date >= indate.Value).ToList();
-            //}           
+         
 
             var dataList = (from lineWork in query
-                           join member in db.CT_Member on lineWork.UserID equals member.fUserId into memberJoin
-                           from member in memberJoin.DefaultIfEmpty()
-                           orderby lineWork.Date descending
-                           select new CT_DataList
-                           {
-                               Sno = lineWork.sno,
-                               Line = lineWork.Line,
-                               EngSr = lineWork.EngSr,
-                               T_B = lineWork.T_B,
-                               BoardSum = (int)lineWork.BoardSum,
-                               BottleneckHours = (decimal)lineWork.BottleneckHours,
-                               Date = (DateTime)lineWork.Date,
-                               Mark = lineWork.Mark,
-                               fName = member != null ? member.fName : null,
-                               OP_Cnt = (int)lineWork.OP_Cnt,
-                               ME_mark = lineWork.MEmark
-                           }).ToList();
+                            join member in db.CT_Member on lineWork.UserID equals member.fUserId into memberJoin
+                            from member in memberJoin.DefaultIfEmpty()
+                            orderby lineWork.Date descending
+                            select new CT_DataList
+                            {
+                                Sno = lineWork.sno,
+                                Line = lineWork.Line,
+                                EngSr = lineWork.EngSr,
+                                T_B = lineWork.T_B,
+                                BoardSum = (int)lineWork.BoardSum,
+                                BottleneckHours = (decimal)lineWork.BottleneckHours,
+                                Date = (DateTime)lineWork.Date,
+                                Mark = lineWork.Mark,
+                                fName = member != null ? member.fName : null,
+                                OP_Cnt = (int)lineWork.OP_Cnt,
+                                ME_mark = lineWork.MEmark??""+lineWork.MEmarkAdd??"",// ME確認原因+ME確認原因補充 20250527 By Jesse
+                            }).ToList();
 
             //CT_DataLists.AddRange(dataList.ToList());
-            
+
             return dataList;
         }
         #endregion
 
         #region CT_Web都用新增變成歷史紀錄
-        public List<CT_DataList> CT_LineDatasInHistory(string engsr,string Lnx,string TB,int b_sum, double t1, double t2, double t3
-                                                                                                  ,decimal neckHours, double other,string mark,string Uid,int opcnt,string memark)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="engsr">機種名稱</param>
+        /// <param name="Lnx">線別</param>
+        /// <param name="TB">板面</param>
+        /// <param name="b_sum">板數</param>
+        /// <param name="t1">L3:NXT/L2:FX3/L4:NXT</param>
+        /// <param name="t2">L3:XPF1/L2:JUKI50/L4:XPF1</param>
+        /// <param name="t3">L3:AIMEX/L2:JUKI80/L4:XPF2</param>
+        /// <param name="neckHours">瓶頸工時</param>
+        /// <param name="other">其他瓶頸</param>
+        /// <param name="mark">工時原因</param>
+        /// <param name="Uid">使用者UID</param>
+        /// <param name="opcnt">標準人數</param>
+        /// <param name="memark">ME確認原因</param>
+        /// <param name="MEmarkAdd">ME確認原因補充</param>
+        /// <returns></returns>
+        public List<CT_DataList> CT_LineDatasInHistory(string engsr, string Lnx, string TB, int b_sum, double t1, double t2, double t3
+                                                        , decimal neckHours, double other, string mark, string Uid, int opcnt, string memark, string MEmarkAdd)
         {
             try
             {
@@ -199,6 +298,7 @@ namespace CycleTimeRecord.Models
                 lineWork.UserID = Uid;
                 lineWork.OP_Cnt = opcnt;
                 lineWork.MEmark = memark;
+                lineWork.MEmarkAdd = MEmarkAdd;
                 lineWork.flag = false;
                 db.CT_LineWork.Add(lineWork);
                 db.SaveChanges();
@@ -223,7 +323,7 @@ namespace CycleTimeRecord.Models
                                        Mark = lineData.Mark,
                                        fName = member != null ? member.fName : null,
                                        OP_Cnt = (int)lineData.OP_Cnt,
-                                       ME_mark= lineData.MEmark
+                                       ME_mark = lineData.MEmark
                                    };
 
                     CT_DataLists.AddRange(dataList);
@@ -243,13 +343,19 @@ namespace CycleTimeRecord.Models
         #endregion
 
         #region 刪除本地紀錄,
+        /// <summary>
+        /// 刪除本地紀錄
+        /// </summary>
+        /// <param name="sno"></param>
+        /// <param name="reason"></param>
+        /// <param name="Uid"></param>
         public void DeleteCTrecord(int sno, string reason, string Uid)
         {
             var record = db.CT_LineWork.Find(sno);
             if (record != null)
             {
-                record.flag = true;
-                record.reason = reason;
+                record.flag = true; /*判斷刪除*/
+                record.reason = reason;/*刪除原因*/
 
                 record.UserID = Uid;
                 record.Date = DateTime.Now;
@@ -260,17 +366,38 @@ namespace CycleTimeRecord.Models
         #endregion
 
         #region 更新AMES 1.0 (WHM002)
+        /// <summary>
+        /// 更新AMES 1.0 (WHM002)
+        /// </summary>
+        /// <param name="engsr"></param>
+        /// <param name="Lnx">線別</param>
+        /// <param name="TB"></param>
+        /// <returns></returns>
         public DataSet RvStandardID(string engsr, string Lnx, string TB)
         {
+            //取得線別對應取得標準工時
             LnxToLxMap.TryGetValue(Lnx, out int Lx);
             TBToSideNameMap.TryGetValue(TB, out string Sidename);
-            DataSet ds= Rv.QueryStd_WorkTime(Lx, Sidename, engsr);
+            DataSet ds = Rv.QueryStd_WorkTime(Lx, Sidename, engsr);
             return ds;
         }
-        public async Task TxStdTimeAsync(string engsr, string Lnx, string TB, int b_sum,decimal neckHours, double other, string mark,string Uid,int op_cnt)
+        /// <summary>
+        /// 更新AMES 1.0
+        /// </summary>
+        /// <param name="engsr">機種名稱</param>
+        /// <param name="Lnx">線別</param>
+        /// <param name="TB">板面</param>
+        /// <param name="b_sum">板數</param>
+        /// <param name="neckHours">瓶頸工時</param>
+        /// <param name="other">其他瓶頸工時</param>
+        /// <param name="mark">工時原因</param>
+        /// <param name="Uid">使用者UID</param>
+        /// <param name="op_cnt">標準人數</param>
+        /// <returns></returns>
+        public async Task TxStdTimeAsync(string engsr, string Lnx, string TB, int b_sum, decimal neckHours, double other, string mark, string Uid, int op_cnt)
         {
             DataSet ds = RvStandardID(engsr, Lnx, TB);
-            if (ds.Tables[0].Rows.Count>0)//Update
+            if (ds.Tables[0].Rows.Count > 0)//Update
             {
                 int StdID = Convert.ToInt32(ds.Tables[0].Rows[0]["STANDARD_ID"]);
                 foreach (DataRow row in ds.Tables[0].Rows)
@@ -305,7 +432,7 @@ namespace CycleTimeRecord.Models
                     {
                         Console.WriteLine(ex.Message);
                     }
-                    catch (Exception err) 
+                    catch (Exception err)
                     {
                         Console.WriteLine(err.Message);
                     }
@@ -320,7 +447,7 @@ namespace CycleTimeRecord.Models
                     LnxToLxMap.TryGetValue(Lnx, out int Lx);
                     TBToStationIDMap.TryGetValue(TB, out int stationID);
 
-                    var result = await Tx.TxStandardTimeAsync("Insert", stdID, "S", Lx, engsr, op_cnt, 0.0, 0.0, CT, 0.0, TB, stationID, mark, Uid);                    
+                    var result = await Tx.TxStandardTimeAsync("Insert", stdID, "S", Lx, engsr, op_cnt, 0.0, 0.0, CT, 0.0, TB, stationID, mark, Uid);
                 }
                 catch (SoapException ex)
                 {
@@ -335,11 +462,20 @@ namespace CycleTimeRecord.Models
 
         //SMD接料帶        266     0.6
         //SMD線外備料    239     0.98
-        public async Task TxStdTimeAsync(string engsr, string Lnx, string TB,string Uid,int cnt)
+        /// <summary>
+        /// 更新AMES 1.0
+        /// </summary>
+        /// <param name="engsr">機種名稱</param>
+        /// <param name="Lnx">線別</param>
+        /// <param name="TB">板面</param>
+        /// <param name="Uid">板數</param>
+        /// <param name="cnt">瓶頸工時</param>
+        /// <returns></returns>
+        public async Task TxStdTimeAsync(string engsr, string Lnx, string TB, string Uid, int cnt)
         {
             DataSet ds = RvStandardID(engsr, Lnx, TB);
-            if (ds.Tables[0].Rows.Count>0)//Update
-            {                
+            if (ds.Tables[0].Rows.Count > 0)//Update
+            {
             }
             else//Insert
             {
@@ -364,6 +500,12 @@ namespace CycleTimeRecord.Models
         #endregion
 
         #region 優化比例
+        /// <summary>
+        /// 日期起~日期迄 中檢可抽百分比
+        /// </summary>
+        /// <param name="startDate">日期起</param>
+        /// <param name="endDate">日期迄</param>
+        /// <returns></returns>
         public double Optimization(string startDate, string endDate)
         {
             double percentage = 0;
@@ -431,16 +573,21 @@ FROM
         #endregion
 
         #region DictionaryMAP
+        /// <summary>
+        /// 板面
+        /// </summary>
         Dictionary<string, string> TBToSideNameMap = new Dictionary<string, string>
         {{ "TOP", "SMT_TOP" },{ "BOT", "SMT_BOT" },};
-        
+
         //站別
         Dictionary<string, int> TBToStationIDMap = new Dictionary<string, int>
         {{ "TOP", 12 },{ "BOT", 13 },};
-        
-        //線別
+
+        /// <summary>
+        /// 線別
+        /// </summary>
         Dictionary<string, int> LnxToLxMap = new Dictionary<string, int>
-        {{ "L1", 1 },{ "L2", 101 },{ "L3", 102 },{ "L4", 103 },{ "L5",104} };  
+        {{ "L1", 1 },{ "L2", 101 },{ "L3", 102 },{ "L4", 103 },{ "L5",104} };
         #endregion
 
     }

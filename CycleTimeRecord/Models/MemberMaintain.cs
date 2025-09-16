@@ -8,18 +8,40 @@ namespace CycleTimeRecord.Models
 {
     public class MemberMaintain
     {
+        /// <summary>
+        /// 資料庫
+        /// </summary>
         private readonly CycleTimeRecordEntities db;
+        /// <summary>
+        /// 資料庫
+        /// </summary>
+        /// <param name="dbContext"></param>
         public MemberMaintain(CycleTimeRecordEntities dbContext)
         {
             db = dbContext;
         }
-                
+        /// <summary>
+        /// 人員結果
+        /// </summary>
         public class MemberResult
-        {            
+        {
+            /// <summary>
+            /// 錯誤訊息
+            /// </summary>
             public bool ErrMsg { get; set; }
+            /// <summary>
+            /// 員工編號
+            /// </summary>
             public string fUserId { get; set; }
+            /// <summary>
+            /// 人員名單建立使用
+            /// </summary>
             public MemberCreateViewModels Member { get; set; }
         }
+        /// <summary>
+        /// 取得人員資料
+        /// </summary>
+        /// <returns></returns>
         public List<MemberViewModels> CT_Member()
         {
             using (var context = new CycleTimeRecordEntities())
@@ -45,7 +67,11 @@ namespace CycleTimeRecord.Models
             }
         }
 
-        //編輯畫面
+        /// <summary>
+        /// 編輯畫面
+        /// </summary>
+        /// <param name="fId"></param>
+        /// <returns></returns>        
         public List<MemberViewModels> Edit(int fId)
         {
             using (var context = new CycleTimeRecordEntities())
@@ -70,6 +96,12 @@ namespace CycleTimeRecord.Models
             }
         }
         //進入編輯程序
+        /// <summary>
+        /// 編輯
+        /// </summary>
+        /// <param name="fUserId"></param>
+        /// <param name="fName"></param>
+        /// <param name="ROLE_ID"></param>
         public void Edit(string fUserId, string fName, string ROLE_ID)
         {
             var member = db.CT_Member.Where(m => m.fUserId == fUserId).FirstOrDefault();
@@ -82,10 +114,14 @@ namespace CycleTimeRecord.Models
             member_Role.USER_ID = fUserId;
             member_Role.ROLE_ID = ROLE_ID;
             member_Role.EXPIRED_DATE = DateTime.Now;
-            db.SaveChanges();                        
+            db.SaveChanges();
         }
 
-        //變更密碼畫面
+        /// <summary>
+        /// 取得員工資料
+        /// </summary>
+        /// <param name="fId">KE</param>
+        /// <returns></returns>
         public List<MemberViewModels> Password(int fId)
         {
             using (var context = new CycleTimeRecordEntities())
@@ -99,7 +135,7 @@ namespace CycleTimeRecord.Models
                             orderby a.fUserId
                             select new MemberViewModels
                             {
-                                fPwd=a.fPwd,
+                                fPwd = a.fPwd,
                                 fId = a.fId,
                                 fUserId = a.fUserId,
                                 fName = a.fName,
@@ -127,14 +163,21 @@ namespace CycleTimeRecord.Models
         }
 
         //人員新增畫面沒有, 直接進入新增人員程序
-        public MemberResult Create(string fUserId, string fName, string ROLE_ID) 
+        /// <summary>
+        /// 新增人員
+        /// </summary>
+        /// <param name="fUserId">員工編號</param>
+        /// <param name="fName">姓名</param>
+        /// <param name="ROLE_ID">角色ID</param>
+        /// <returns></returns>
+        public MemberResult Create(string fUserId, string fName, string ROLE_ID)
         {
             //檢查是否重複
             var repeat = db.CT_Member.Where(u => u.fUserId == fUserId).FirstOrDefault();
             MemberCreateViewModels result = new MemberCreateViewModels();
             if (repeat != null)
             {
-                return new MemberResult { ErrMsg = false};                                
+                return new MemberResult { ErrMsg = false };
             }
             else
             {
@@ -155,15 +198,19 @@ namespace CycleTimeRecord.Models
                 db.CT_MemberRole.Add(member_Role);
                 db.SaveChanges();
                 return new MemberResult { ErrMsg = true };
-            }            
+            }
         }
 
         //人員刪除
+        /// <summary>
+        /// 變更狀態
+        /// </summary>
+        /// <param name="fId"></param>
         public void Del(int fId)
         {
             var member = db.CT_Member.Where(m => m.fId == fId).FirstOrDefault();
 
-            member.fStatus = (member.fStatus == true) ? false : true;
+            member.fStatus = (member.fStatus == true) ? false : true;//以 true為啟用, false為停用
 
             db.SaveChanges();
         }
