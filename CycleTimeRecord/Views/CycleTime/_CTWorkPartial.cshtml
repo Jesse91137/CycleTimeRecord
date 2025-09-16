@@ -1,0 +1,160 @@
+﻿@using PagedList
+@using PagedList.Mvc
+@model IPagedList<CycleTimeRecord.Models.CTWorks.CT_DataList>
+
+<!-- 確保FontAwesome正確載入 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+@*<p>目前頁碼：@Model.PageNumber / 共 @Model.TotalItemCount 筆</p>*@
+<table class="table" id="tableshow">
+    <tr>
+        <th>機種名稱</th>
+        <th>線別</th>
+        <th>標準人數</th>
+        <th>板面</th>
+        <th>板數</th>
+        <th>瓶頸工時</th>
+        <th>更新人員</th>
+        <th>原因</th>
+        <th>日期</th>
+        @if (@ViewBag.RoleId == "D")
+        {
+<th>刪除</th>}
+    </tr>
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>@item.EngSr</td>
+    <td>@item.Line</td>
+    <td>
+        @item.OP_Cnt
+        @if (!string.IsNullOrEmpty(item.ME_mark))
+        {
+<span class="me-mark-icon-wrapper">
+    <i class="fas fa-book-open me-mark-icon" data-toggle="tooltip" title="點擊查看ME標記" data-me-mark="@item.ME_mark"></i>
+</span>         }
+    </td>
+    <td>@item.T_B</td>
+    <td>@item.BoardSum</td>
+    <td>@item.BottleneckHours</td>
+    <td>@item.fName</td>
+    <td>@item.Mark</td>
+    <td>@item.Date</td>
+    @if (@ViewBag.RoleId == "D")
+    {
+<td>@Html.ActionLink("刪除", "DeleteCT", new { sno = item.Sno }, new { @class = "delete-link" })</td>}
+</tr>}
+</table>
+<div class="pagination-container text-center">
+    @Html.PagedListPager(Model, page => "javascript:loadPartial(" + page + ");", new PagedListRenderOptions
+    {
+        DisplayLinkToFirstPage = PagedListDisplayMode.Always,
+        DisplayLinkToLastPage = PagedListDisplayMode.Always,
+        DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+        DisplayLinkToNextPage = PagedListDisplayMode.Always,
+        MaximumPageNumbersToDisplay = 5
+    })
+</div>
+<!-- ME標記顯示的彈出窗口 -->
+<div class="modal fade" id="meMarkModal" tabindex="-1" role="dialog" aria-labelledby="meMarkModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="meMarkModalLabel">ME標記詳情</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="meMarkContent">
+                <!-- ME標記內容將在這裡顯示 -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        // 確保FontAwesome已載入，如果沒有手動添加
+        if ($('link[href*="font-awesome"], link[href*="fontawesome"]').length === 0) {
+            $('head').append('<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">');
+        }
+
+        // 刪除功能
+        $('.delete-link').click(function (event) {
+            event.preventDefault(); // 阻止默認行為，即跳轉到刪除操作的 URL
+            var deleteUrl = $(this).attr('href');
+            var reason = prompt('請輸入刪除原因：');
+            if (reason) {
+                // 使用 AJAX 向後端傳送刪除原因
+                $.ajax({
+                    url: deleteUrl,
+                    method: 'POST',
+                    data: { reason: reason },
+                    success: function () {
+                        // 刪除成功，重新載入頁面
+                        location.reload();
+                    },
+                    error: function () {
+                        alert('刪除失敗，請重試。');
+                    }
+                });
+            }
+        });
+
+        // ME標記顯示功能
+        $(document).on('click', '.me-mark-icon', function () {
+            var meMarkContent = $(this).attr('data-me-mark');
+            // 內容顯示在模態框中
+            $('#meMarkContent').text(meMarkContent);
+            $('#meMarkModal').modal('show');
+        });
+
+        // 初始化tooltip (需要Bootstrap的tooltip功能)
+        if (typeof $.fn.tooltip !== 'undefined') {
+            $('[data-toggle="tooltip"]').tooltip();
+        }
+    });
+    
+</script>
+
+<style>
+    /* 確保圖示可見的樣式 */
+    .me-mark-icon-wrapper {
+        display: inline-block;
+        margin-left: 5px;
+        vertical-align: middle;
+    }
+
+    .me-mark-icon {
+        cursor: pointer;
+        color: #007bff !important; /* 使用!important來覆蓋可能的衝突樣式 */
+        display: inline-block !important;
+        font-size: 16px !important;
+        vertical-align: middle !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+
+        .me-mark-icon:hover {
+            color: #0056b3 !important;
+        }
+
+    /* 確保FontAwesome圖示正確顯示 */
+    .fas {
+        font-family: "Font Awesome 5 Free" !important;
+        font-weight: 900 !important;
+        -moz-osx-font-smoothing: grayscale !important;
+        -webkit-font-smoothing: antialiased !important;
+        display: inline-block !important;
+        font-style: normal !important;
+        font-variant: normal !important;
+        text-rendering: auto !important;
+        line-height: 1 !important;
+    }
+
+    .fa-book-open:before {
+        content: "\f518" !important;
+    }
+</style>

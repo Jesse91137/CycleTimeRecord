@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CycleTimeRecordDb.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CT_CycleTimeRecord_Role">
+          <Key>
+            <PropertyRef Name="sno" />
+          </Key>
+          <Property Name="sno" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ROLE_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="ROLE_DESC" Type="nvarchar" MaxLength="150" />
+          <Property Name="CREATE_USERID" Type="varchar" MaxLength="5" />
+          <Property Name="ROLE_ID" Type="nchar" MaxLength="1" />
+        </EntityType>
+        <EntityType Name="CT_LineWork">
+          <Key>
+            <PropertyRef Name="sno" />
+          </Key>
+          <Property Name="sno" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EngSr" Type="nvarchar" MaxLength="10" />
+          <Property Name="Line" Type="nvarchar" MaxLength="5" />
+          <Property Name="T_B" Type="nvarchar" MaxLength="3" />
+          <Property Name="BoardSum" Type="int" />
+          <Property Name="Text1" Type="float" />
+          <Property Name="Text2" Type="float" />
+          <Property Name="Text3" Type="float" />
+          <Property Name="BottleneckHours" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Date" Type="datetime" />
+          <Property Name="Other" Type="float" />
+          <Property Name="Mark" Type="nvarchar" MaxLength="100" />
+          <Property Name="UserID" Type="nvarchar" MaxLength="5" />
+          <Property Name="flag" Type="bit" />
+          <Property Name="reason" Type="nvarchar" MaxLength="100" />
+          <Property Name="OP_Cnt" Type="int" />
+          <Property Name="MEmark" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="CT_Member">
+          <Key>
+            <PropertyRef Name="fId" />
+          </Key>
+          <Property Name="fId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="fUserId" Type="nvarchar" MaxLength="5" />
+          <Property Name="fPwd" Type="nvarchar" MaxLength="50" />
+          <Property Name="fName" Type="nvarchar" MaxLength="50" />
+          <Property Name="fStatus" Type="bit" />
+        </EntityType>
+        <EntityType Name="CT_MemberRole">
+          <Key>
+            <PropertyRef Name="sno" />
+          </Key>
+          <Property Name="sno" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USER_ID" Type="varchar" MaxLength="5" />
+          <Property Name="ROLE_ID" Type="char" MaxLength="1" />
+          <Property Name="EXPIRED_DATE" Type="datetime" />
+        </EntityType>
+        <EntityContainer Name="CycleTimeRecordDbStoreContainer">
+          <EntitySet Name="CT_CycleTimeRecord_Role" EntityType="Self.CT_CycleTimeRecord_Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CT_LineWork" EntityType="Self.CT_LineWork" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CT_Member" EntityType="Self.CT_Member" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CT_MemberRole" EntityType="Self.CT_MemberRole" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CycleTimeRecordDb" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="CT_CycleTimeRecord_Role">
+          <Key>
+            <PropertyRef Name="sno" />
+          </Key>
+          <Property Name="sno" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ROLE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ROLE_DESC" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_USERID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="ROLE_ID" Type="String" MaxLength="1" FixedLength="true" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CT_Member">
+          <Key>
+            <PropertyRef Name="fId" />
+          </Key>
+          <Property Name="fId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="fUserId" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="fPwd" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="fName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="fStatus" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="CT_MemberRole">
+          <Key>
+            <PropertyRef Name="sno" />
+          </Key>
+          <Property Name="sno" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USER_ID" Type="String" MaxLength="5" FixedLength="false" Unicode="false" />
+          <Property Name="ROLE_ID" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="EXPIRED_DATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityContainer Name="CycleTimeRecordEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="CT_CycleTimeRecord_Role" EntityType="Self.CT_CycleTimeRecord_Role" />
+          <EntitySet Name="CT_Member" EntityType="Self.CT_Member" />
+          <EntitySet Name="CT_MemberRole" EntityType="Self.CT_MemberRole" />
+          <EntitySet Name="CT_LineWork" EntityType="CycleTimeRecordDb.CT_LineWork" />
+        </EntityContainer>
+        <EntityType Name="CT_LineWork">
+          <Key>
+            <PropertyRef Name="sno" />
+          </Key>
+          <Property Name="sno" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EngSr" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Line" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="T_B" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="BoardSum" Type="Int32" />
+          <Property Name="Text1" Type="Double" />
+          <Property Name="Text2" Type="Double" />
+          <Property Name="Text3" Type="Double" />
+          <Property Name="BottleneckHours" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Other" Type="Double" />
+          <Property Name="Mark" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="UserID" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="flag" Type="Boolean" />
+          <Property Name="reason" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OP_Cnt" Type="Int32" />
+          <Property Name="MEmark" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CycleTimeRecordDbStoreContainer" CdmEntityContainer="CycleTimeRecordEntities">
+          <EntitySetMapping Name="CT_CycleTimeRecord_Role">
+            <EntityTypeMapping TypeName="CycleTimeRecordDb.CT_CycleTimeRecord_Role">
+              <MappingFragment StoreEntitySet="CT_CycleTimeRecord_Role">
+                <ScalarProperty Name="sno" ColumnName="sno" />
+                <ScalarProperty Name="ROLE_NAME" ColumnName="ROLE_NAME" />
+                <ScalarProperty Name="ROLE_DESC" ColumnName="ROLE_DESC" />
+                <ScalarProperty Name="CREATE_USERID" ColumnName="CREATE_USERID" />
+                <ScalarProperty Name="ROLE_ID" ColumnName="ROLE_ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CT_Member">
+            <EntityTypeMapping TypeName="CycleTimeRecordDb.CT_Member">
+              <MappingFragment StoreEntitySet="CT_Member">
+                <ScalarProperty Name="fStatus" ColumnName="fStatus" />
+                <ScalarProperty Name="fId" ColumnName="fId" />
+                <ScalarProperty Name="fUserId" ColumnName="fUserId" />
+                <ScalarProperty Name="fPwd" ColumnName="fPwd" />
+                <ScalarProperty Name="fName" ColumnName="fName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CT_MemberRole">
+            <EntityTypeMapping TypeName="CycleTimeRecordDb.CT_MemberRole">
+              <MappingFragment StoreEntitySet="CT_MemberRole">
+                <ScalarProperty Name="sno" ColumnName="sno" />
+                <ScalarProperty Name="USER_ID" ColumnName="USER_ID" />
+                <ScalarProperty Name="ROLE_ID" ColumnName="ROLE_ID" />
+                <ScalarProperty Name="EXPIRED_DATE" ColumnName="EXPIRED_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CT_LineWork">
+            <EntityTypeMapping TypeName="CycleTimeRecordDb.CT_LineWork">
+              <MappingFragment StoreEntitySet="CT_LineWork">
+                <ScalarProperty Name="MEmark" ColumnName="MEmark" />
+                <ScalarProperty Name="OP_Cnt" ColumnName="OP_Cnt" />
+                <ScalarProperty Name="reason" ColumnName="reason" />
+                <ScalarProperty Name="flag" ColumnName="flag" />
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="Mark" ColumnName="Mark" />
+                <ScalarProperty Name="Other" ColumnName="Other" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="BottleneckHours" ColumnName="BottleneckHours" />
+                <ScalarProperty Name="Text3" ColumnName="Text3" />
+                <ScalarProperty Name="Text2" ColumnName="Text2" />
+                <ScalarProperty Name="Text1" ColumnName="Text1" />
+                <ScalarProperty Name="BoardSum" ColumnName="BoardSum" />
+                <ScalarProperty Name="T_B" ColumnName="T_B" />
+                <ScalarProperty Name="Line" ColumnName="Line" />
+                <ScalarProperty Name="EngSr" ColumnName="EngSr" />
+                <ScalarProperty Name="sno" ColumnName="sno" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="false" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="無" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="TxStationData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="woNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="stationName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="barcodeNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="opNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="errorCode" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="errorDesc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="errorLocation" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxStationDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxStationDataResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxStandardID">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="tableName" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxStandardIDResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="TxStandardIDResult" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="TxStationDataSoapIn">
+    <wsdl:part name="parameters" element="tns:TxStationData" />
+  </wsdl:message>
+  <wsdl:message name="TxStationDataSoapOut">
+    <wsdl:part name="parameters" element="tns:TxStationDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxStandardIDSoapIn">
+    <wsdl:part name="parameters" element="tns:TxStandardID" />
+  </wsdl:message>
+  <wsdl:message name="TxStandardIDSoapOut">
+    <wsdl:part name="parameters" element="tns:TxStandardIDResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ProcessServiceSoap">
+    <wsdl:operation name="TxStationData">
+      <wsdl:input message="tns:TxStationDataSoapIn" />
+      <wsdl:output message="tns:TxStationDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxStandardID">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">取得標準工時新增STANDARD_ID</wsdl:documentation>
+      <wsdl:input message="tns:TxStandardIDSoapIn" />
+      <wsdl:output message="tns:TxStandardIDSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ProcessServiceSoap" type="tns:ProcessServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="TxStationData">
+      <soap:operation soapAction="http://tempuri.org/TxStationData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxStandardID">
+      <soap:operation soapAction="http://tempuri.org/TxStandardID" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="ProcessServiceSoap12" type="tns:ProcessServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="TxStationData">
+      <soap12:operation soapAction="http://tempuri.org/TxStationData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxStandardID">
+      <soap12:operation soapAction="http://tempuri.org/TxStandardID" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ProcessService">
+    <wsdl:port name="ProcessServiceSoap" binding="tns:ProcessServiceSoap">
+      <soap:address location="http://192.168.4.200/AMES/Service/ProcessService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="ProcessServiceSoap12" binding="tns:ProcessServiceSoap12">
+      <soap12:address location="http://192.168.4.200/AMES/Service/ProcessService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

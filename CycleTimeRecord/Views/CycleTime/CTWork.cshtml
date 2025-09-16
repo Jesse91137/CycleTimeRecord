@@ -1,0 +1,402 @@
+﻿@using PagedList
+@using PagedList.Mvc
+@model IPagedList<CycleTimeRecord.Models.CTWorks.CT_DataList>
+
+@{
+    ViewBag.Title = "標準工時作業";
+}
+
+<head>
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <style>
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .pagination-container {
+            flex: 1;
+        }
+
+        .date-filter {
+            display: flex;
+            align-items: center;
+        }
+
+            .date-filter input[type="date"] {
+                width: 140px;
+                margin: 0 5px;
+                height: 36px;
+            }
+
+            .date-filter label {
+                margin: 0 5px;
+                white-space: nowrap;
+            }
+    </style>
+    <script>
+        let searchTimeout;
+        function loadPartial(page) {
+            clearTimeout(searchTimeout); // 清除之前的計時器
+            searchTimeout = setTimeout(function () { // 延遲執行，避免過快觸發
+                $.ajax({
+                    url: '@Url.Action("CTWorkSearch", "CycleTime")',
+                    type: 'POST',
+                    data: {
+                        page: page,
+                        engSr: $("#EngSr").val(),
+                        Line: $("#Line").val(),
+                        TB: $("#T_B").val(),
+                        BoardSum: $("#BoardSum").val(),
+                        BottleneckHours: $("#BottleneckHours").val(),
+                        indate: $("#indate").val(),
+                        indate2: $("#indate2").val(),
+                        Mark: $("#Mark").val()
+                    },
+                    beforeSend: function () {
+                        console.log("AJAX Request Sent!");
+                        $('#partialViewContainer').html('<p>載入中...</p>');
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            console.log("Partial View Data: ", response.partialView);
+                            $('#partialViewContainer').html(response.partialView); // 更新部分視圖
+                            $('#percentageDisplay').text("中檢可抽百分比:" + response.percentage + "%"); // 更新主視圖的數值
+                        } else if (response.error && response.redirect) {
+                            window.location.href = response.redirect; // 重新導向登入
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(xhr.responseText);
+                        alert('資料載入失敗，請稍後再試！');
+                    }
+                });
+            }, 500); // 500 毫秒延遲執行
+        }
+
+        $(document).ready(function () {
+            $("#btnSearch").click(function () {
+                loadPartial(1);
+            });
+
+            $("#indate2").change(function () {
+                loadPartial(1);
+            });
+
+            $("#btnClear").click(function () {
+                $("#Line, #EngSr, #T_B, #BoardSum, #Text1, #Text2, #Text3, #Other, #Mark, #BottleneckHours, #OPCnt, #MEmark").val("");
+                loadPartial(1);
+            });
+        });
+
+
+        ///即時計算瓶頸工時
+        $(document).ready(function () {
+            $("#Text1,#Text2,#Text3,#Other").change(function () {
+                var t1 = $("#Text1").val();
+                var t2 = $("#Text2").val();
+                var t3 = $("#Text3").val();
+                var t4 = $('#Other').val();
+                // 找出最大值
+                var maxNum = Math.max(t1, t2, t3, t4);
+                var result = (maxNum * 1.04).toFixed(2); //2025.02.24 modify 原1.08 → 1.04
+                $("#BottleneckHours").val(result);
+            });
+        });
+
+        /// 根據選擇的 Line，設定對應的 label 名稱
+        $(document).ready(function () {
+            $("#Line").change(function () {
+                var selectedLine = $(this).val();
+                switch (selectedLine) {
+                    case "L1":
+                    case "L3":
+                        $("#lab1").text("NXT");
+                        $("#lab2").text("XPF1");
+                        $("#lab3").text("AIMEX");
+                        break;
+                    case "L2":
+                        $("#lab1").text("FX3");
+                        $("#lab2").text("JUKI50");
+                        $("#lab3").text("JUKI80");
+                        break;
+                    case "L4":
+                        $("#lab1").text("NXT");
+                        $("#lab2").text("XPF1");
+                        $("#lab3").text("XPF2");
+                        break;
+                    default:
+                }
+
+            });
+        });
+
+        ///即時更新對應之機台工時Text1~Text3
+        $(document).ready(function () {
+            $("#Line, #EngSr, #T_B").change(function () {
+                var selectedLine = $("#Line").val();
+                var engSrValue = $("#EngSr").val();
+                var selectedLineT_B = $("#T_B").val();
+
+                // 如果 Line 和 EngSr 都有值，發送 Ajax 查詢
+                if (selectedLine && engSrValue && selectedLineT_B) {
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("CTWorkAjax", "CycleTime")",
+                        data: { line: selectedLine, engSr: engSrValue, TB: selectedLineT_B },
+                        success: function (data) {
+                            // 更新 Textbox 的值
+                            // 確認 data 不是 undefined 並且至少包含一個元素
+                            if (data && data.length > 0) {
+                                // 更新 Textbox 的值
+                                $("#Text1").val(data[0].Text1);
+                                $("#Text2").val(data[0].Text2);
+                                $("#Text3").val(data[0].Text3);
+                                $('#Other').val(data[0].Other);
+                                $('#Mark').val(data[0].Mark);
+                                $("#BottleneckHours").val(data[0].BottleneckHours);
+                                $("#BoardSum").val(data[0].BoardSum);
+                                $("#OPCnt").val(data[0].OP_Cnt);
+                                $("#MEmark").val(data[0].ME_mark);
+                            } else {
+                                // 如果 data 為空，清空相關 Textbox 的值
+                                $("#Text1").val("");
+                                $("#Text2").val("");
+                                $("#Text3").val("");
+                                $('#Other').val("");
+                                $("#BottleneckHours").val("");
+                                $("#BoardSum").val("");
+                                $("#Mark").val("");
+                                $("#OPCnt").val("");
+                                $("#MEmark").val("");
+                            }
+                        },
+                        error: function (error) {
+                            console.log("Ajax request failed: " + error);
+                        }
+                    });
+                }
+            });
+        });
+
+        $(document).ready(function () {
+            $('#btnSearch').click(function () {
+                $.ajax({
+                    url: '@Url.Action("CTWorkSearch", "CycleTime")',
+                    type: 'POST',
+                    data: {
+                        engSr: $("#EngSr").val(),
+                        Line: $("#Line").val(),
+                        TB: $("#T_B").val(),
+                        BoardSum: $("#BoardSum").val(),
+                        BottleneckHours: $("#BottleneckHours").val(),
+                        //Other: $("#Other").val(),
+                        Mark: $("#Mark").val()
+                    },
+                    cache: false,
+                    success: function (data) {
+                        // 更新部分視圖
+                        $('#partialViewContainer').html(data);
+                    },
+                });
+            });
+        });
+
+        ///更新
+       $(document).ready(function () {
+            $('#btnAllRun').click(function () {
+                console.log("btnAllRun clicked"); // 添加這行
+                var t1 = isValidFloat($("#Text1").val());
+                var t2 = isValidFloat($("#Text2").val());
+                var t3 = isValidFloat($("#Text3").val());
+                var t4 = isValidFloat($("#Other").val());
+                var t5 = isValidFloat($("#BoardSum").val());
+                var t6 = isValidFloat($("#OPCnt").val());
+
+                $.ajax({
+                    url: '@Url.Action("CTWorkInHistory", "CycleTime")',
+                    type: 'POST',
+                    data: {
+                        engSr: $("#EngSr").val(),
+                        Line: $("#Line").val(),
+                        TB: $("#T_B").val(),
+                        Text1: t1,
+                        Text2: t2,
+                        Text3: t3,
+                        BoardSum: t5,
+                        BottleneckHours: $("#BottleneckHours").val(),
+                        Other: t4,
+                        Mark: $("#Mark").val(),
+                        OPCnt: t6,
+                        MEmark: $("#MEmark").val(),
+                    },
+                    cache: false,
+                    success: function (data) {
+                        console.log("Ajax request success"); // 添加這行
+                        // 更新部分視圖
+                        $('#partialViewContainer').html(data);
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Ajax request failed. Status:", status);
+                        console.log("Error:", error);
+                        console.log("XHR object:", xhr);
+
+                        // 可以將以下信息添加到 alert 中，以便在瀏覽器中查看
+                        alert('Ajax request failed. ' + '\nError: 輸入錯誤或查無資料');
+                    },
+                });
+            });
+           function isValidFloat(value) {
+               var parsedValue = parseFloat(value);
+               return !isNaN(parsedValue) ? parsedValue : 0;
+           }
+        });
+    </script>
+</head>
+
+<body>
+    <h2>標準工時作業</h2>
+    <div class="panel panel-primary">
+        <div class="panel-heading">工時管理</div>
+        <div class="panel-body">
+            <!-- 其他查詢條件區 -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="Lnx">線別</label>
+                        <select id="Line" name="Line" class="form-control">
+                            <option value="">請選擇...</option>
+                            <option value="L1">1線　|　L-1</option>
+                            <option value="L2">2線　|　L-2</option>
+                            <option value="L3">3線　|　L-3</option>
+                            <option value="L4">4線　|　L-4</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- 其他查詢條件 (例如 EngSr, T_B, BoardSum, Text1, Text2, Text3, Other, Mark, 等) -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="EngSr">機種名稱</label>
+                        <input type="text" class="form-control" id="EngSr" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="TB">板面</label>
+                        <select id="T_B" name="T_B" class="form-control">
+                            <option value="">請選擇...</option>
+                            <option value="TOP">T　|　TOP</option>
+                            <option value="BOT">B　|　BOT</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="BoardSum">板數</label>
+                        <input type="text" class="form-control" id="BoardSum" name="BoardSum" required>
+                    </div>
+                </div>
+            </div>
+            <!-- 更新區 -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lab1" id="lab1"></label>
+                        <input type="text" class="form-control" id="Text1" name="Text1" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lab2" id="lab2"></label>
+                        <input type="text" class="form-control" id="Text2" name="Text2" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="lab3" id="lab3"></label>
+                        <input type="text" class="form-control" id="Text3" name="Text3" required>
+                    </div>
+                </div>
+            </div>
+            <!-- 其他更新區 -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="other">其他瓶頸(印刷、SPI、錫爐、手放)</label>
+                        <input type="text" class="form-control" id="Other" name="Other" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="mark">工時原因</label>
+                        <input type="text" class="form-control" id="Mark" name="Mark" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="BottleneckHours">瓶頸工時(權重*1.04)</label>
+                        <input type="text" class="form-control" id="BottleneckHours" name="BottleneckHours" readonly="readonly" required>
+                    </div>
+                </div>
+            </div>
+            <!-- 數值更新區 -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="OPCnt">標準人數</label>
+                        <input type="text" class="form-control" id="OPCnt" name="OPCnt" required>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="MEmark">ME確認原因</label>
+                        <input type="text" class="form-control" id="MEmark" name="MEmark" required>
+                    </div>
+                </div>
+            </div>
+            <!-- 查詢與清除 -->
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="button" value="查詢" id="btnSearch" class="btn btn-danger" />
+                </div>
+                <div class="col-md-4">
+                    <input type="button" value="清除查詢" id="btnClear" class="btn btn-default" />
+                </div>
+                <div class="col-md-4">
+                    @if (@ViewBag.RoleId == "A" || @ViewBag.RoleId == "D")
+                    {
+                        <input type="button" value="瓶頸工時更新" id="btnAllRun" class="btn btn-success" />
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    </body>
+
+    <p></p>
+
+    <!-- 主視圖中的部分視圖容器與日期欄位 -->
+    <div class="header-row">
+        <div class="pagination-container">
+        </div>
+        <div class="date-filter">
+            @Html.TextBox("indate", null, new { @type = "date", @id = "indate", @class = "form-control", style = "width: auto;" })
+            <label for="indate2" class="mx-2">～</label>
+            @Html.TextBox("indate2", null, new { @type = "date", @id = "indate2", @class = "form-control", style = "width: auto;" })
+        </div>
+        <!-- 顯示 ViewBag 資料的數字 -->
+        <span id="percentageDisplay" style="color: red; font-weight: bold;">
+            中檢可抽百分比:
+            @ViewBag.Percentage%
+        </span>
+
+    </div>
+
+    <div id="partialViewContainer">
+        @Html.Partial("_CTWorkPartial", Model)
+    </div>

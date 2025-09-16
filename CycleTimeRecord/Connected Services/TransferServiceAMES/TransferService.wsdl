@@ -1,0 +1,623 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://tempuri.org/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:s="http://www.w3.org/2001/XMLSchema" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://tempuri.org/">
+      <s:element name="TxItem">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="itemNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="itemName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="itemDesc" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="itemType" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="uniqueFlag" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxItemResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxItemResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxProductType">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="typeNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="typeName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="typeDesc" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxProductTypeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxProductTypeResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxModel">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="modelNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="modelName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="modelSpec" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="modelUnit" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="modelDesc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="modelGroup" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="productTypeId" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="modelType" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="burnTime" nillable="true" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxModelResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxModelResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxFlow">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="flowName" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="flowDesc" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="unitNo" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxFlowResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxFlowResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxWorkOrderInfo">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="woNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="planQty" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="unitNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="productTypeId" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="modelNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="woType" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="engSr" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxWorkOrderInfoResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxWorkOrderInfoResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxWorkOrderInsertAndStart">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="woNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="planQty" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="unitNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="productTypeId" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="modelNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="woType" nillable="true" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="lineId" nillable="true" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="flowId" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="engSr" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxWorkOrderInsertAndStartResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxWorkOrderInsertAndStartResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PassStation">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="barcodeNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="lineId" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="unitNo" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="stationId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="woId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="flowId" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="collectDate" type="s:dateTime" />
+            <s:element minOccurs="0" maxOccurs="1" name="ruleStatus" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="PassStationResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="PassStationResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxWorkManpower">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="POWER_ID" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="POWER_DATE" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="USER_NO" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="USER_NAME" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="UNIT_NO" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="CLASS_ID" nillable="true" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="OVER_H" nillable="true" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="PREPAR_REST_H" nillable="true" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="FACT_REST_H" nillable="true" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="LEAVE_H" nillable="true" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="FACT_WORK_H" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="BREAK_TIME" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="CLASS_NO" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="WERKS" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="LINE_ID" nillable="true" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="STATION_ID" nillable="true" type="s:int" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxWorkManpowerResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxWorkManpowerResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RvSensorByIp">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="deviceIp" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RvSensorByIpResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RvSensorByIpResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxSensorLog">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="1" maxOccurs="1" name="sensorId" nillable="true" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="inputValue" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="logDatetime" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxSensorLogResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxSensorLogResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RvWoYieldData">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="woNo" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="engSr" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="startDate" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="endDate" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="RvWoYieldDataResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="RvWoYieldDataResult">
+              <s:complexType>
+                <s:sequence>
+                  <s:element ref="s:schema" />
+                  <s:any />
+                </s:sequence>
+              </s:complexType>
+            </s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxStandardTime">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="txtype" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="stdID" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="UNIT_NO" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="LINE_ID" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="ITEM_NO" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="OP_CNT" nillable="true" type="s:int" />
+            <s:element minOccurs="1" maxOccurs="1" name="FIRST_TIME" nillable="true" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="TOTAL_CT" nillable="true" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="CT" nillable="true" type="s:double" />
+            <s:element minOccurs="1" maxOccurs="1" name="MACHINE_CNT" nillable="true" type="s:double" />
+            <s:element minOccurs="0" maxOccurs="1" name="SIDE" type="s:string" />
+            <s:element minOccurs="1" maxOccurs="1" name="STATION_ID" nillable="true" type="s:int" />
+            <s:element minOccurs="0" maxOccurs="1" name="MEMO" type="s:string" />
+            <s:element minOccurs="0" maxOccurs="1" name="uID" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="TxStandardTimeResponse">
+        <s:complexType>
+          <s:sequence>
+            <s:element minOccurs="0" maxOccurs="1" name="TxStandardTimeResult" type="s:string" />
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+    </s:schema>
+  </wsdl:types>
+  <wsdl:message name="TxItemSoapIn">
+    <wsdl:part name="parameters" element="tns:TxItem" />
+  </wsdl:message>
+  <wsdl:message name="TxItemSoapOut">
+    <wsdl:part name="parameters" element="tns:TxItemResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxProductTypeSoapIn">
+    <wsdl:part name="parameters" element="tns:TxProductType" />
+  </wsdl:message>
+  <wsdl:message name="TxProductTypeSoapOut">
+    <wsdl:part name="parameters" element="tns:TxProductTypeResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxModelSoapIn">
+    <wsdl:part name="parameters" element="tns:TxModel" />
+  </wsdl:message>
+  <wsdl:message name="TxModelSoapOut">
+    <wsdl:part name="parameters" element="tns:TxModelResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxFlowSoapIn">
+    <wsdl:part name="parameters" element="tns:TxFlow" />
+  </wsdl:message>
+  <wsdl:message name="TxFlowSoapOut">
+    <wsdl:part name="parameters" element="tns:TxFlowResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxWorkOrderInfoSoapIn">
+    <wsdl:part name="parameters" element="tns:TxWorkOrderInfo" />
+  </wsdl:message>
+  <wsdl:message name="TxWorkOrderInfoSoapOut">
+    <wsdl:part name="parameters" element="tns:TxWorkOrderInfoResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxWorkOrderInsertAndStartSoapIn">
+    <wsdl:part name="parameters" element="tns:TxWorkOrderInsertAndStart" />
+  </wsdl:message>
+  <wsdl:message name="TxWorkOrderInsertAndStartSoapOut">
+    <wsdl:part name="parameters" element="tns:TxWorkOrderInsertAndStartResponse" />
+  </wsdl:message>
+  <wsdl:message name="PassStationSoapIn">
+    <wsdl:part name="parameters" element="tns:PassStation" />
+  </wsdl:message>
+  <wsdl:message name="PassStationSoapOut">
+    <wsdl:part name="parameters" element="tns:PassStationResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxWorkManpowerSoapIn">
+    <wsdl:part name="parameters" element="tns:TxWorkManpower" />
+  </wsdl:message>
+  <wsdl:message name="TxWorkManpowerSoapOut">
+    <wsdl:part name="parameters" element="tns:TxWorkManpowerResponse" />
+  </wsdl:message>
+  <wsdl:message name="RvSensorByIpSoapIn">
+    <wsdl:part name="parameters" element="tns:RvSensorByIp" />
+  </wsdl:message>
+  <wsdl:message name="RvSensorByIpSoapOut">
+    <wsdl:part name="parameters" element="tns:RvSensorByIpResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxSensorLogSoapIn">
+    <wsdl:part name="parameters" element="tns:TxSensorLog" />
+  </wsdl:message>
+  <wsdl:message name="TxSensorLogSoapOut">
+    <wsdl:part name="parameters" element="tns:TxSensorLogResponse" />
+  </wsdl:message>
+  <wsdl:message name="RvWoYieldDataSoapIn">
+    <wsdl:part name="parameters" element="tns:RvWoYieldData" />
+  </wsdl:message>
+  <wsdl:message name="RvWoYieldDataSoapOut">
+    <wsdl:part name="parameters" element="tns:RvWoYieldDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="TxStandardTimeSoapIn">
+    <wsdl:part name="parameters" element="tns:TxStandardTime" />
+  </wsdl:message>
+  <wsdl:message name="TxStandardTimeSoapOut">
+    <wsdl:part name="parameters" element="tns:TxStandardTimeResponse" />
+  </wsdl:message>
+  <wsdl:portType name="TransferServiceSoap">
+    <wsdl:operation name="TxItem">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">組件代碼維護</wsdl:documentation>
+      <wsdl:input message="tns:TxItemSoapIn" />
+      <wsdl:output message="tns:TxItemSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxProductType">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">產品類別維護</wsdl:documentation>
+      <wsdl:input message="tns:TxProductTypeSoapIn" />
+      <wsdl:output message="tns:TxProductTypeSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxModel">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">機種資料維護</wsdl:documentation>
+      <wsdl:input message="tns:TxModelSoapIn" />
+      <wsdl:output message="tns:TxModelSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxFlow">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">流程資料維護</wsdl:documentation>
+      <wsdl:input message="tns:TxFlowSoapIn" />
+      <wsdl:output message="tns:TxFlowSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkOrderInfo">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">工單資料維護</wsdl:documentation>
+      <wsdl:input message="tns:TxWorkOrderInfoSoapIn" />
+      <wsdl:output message="tns:TxWorkOrderInfoSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkOrderInsertAndStart">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">工單資料維護</wsdl:documentation>
+      <wsdl:input message="tns:TxWorkOrderInsertAndStartSoapIn" />
+      <wsdl:output message="tns:TxWorkOrderInsertAndStartSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="PassStation">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">條碼過站</wsdl:documentation>
+      <wsdl:input message="tns:PassStationSoapIn" />
+      <wsdl:output message="tns:PassStationSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkManpower">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">出勤工時維護</wsdl:documentation>
+      <wsdl:input message="tns:TxWorkManpowerSoapIn" />
+      <wsdl:output message="tns:TxWorkManpowerSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RvSensorByIp">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">獲取傳感器列表</wsdl:documentation>
+      <wsdl:input message="tns:RvSensorByIpSoapIn" />
+      <wsdl:output message="tns:RvSensorByIpSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxSensorLog">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">收集傳感器日誌</wsdl:documentation>
+      <wsdl:input message="tns:TxSensorLogSoapIn" />
+      <wsdl:output message="tns:TxSensorLogSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="RvWoYieldData">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">獲取不良分析報表</wsdl:documentation>
+      <wsdl:input message="tns:RvWoYieldDataSoapIn" />
+      <wsdl:output message="tns:RvWoYieldDataSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="TxStandardTime">
+      <wsdl:documentation xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">標準工時維護(新增)</wsdl:documentation>
+      <wsdl:input message="tns:TxStandardTimeSoapIn" />
+      <wsdl:output message="tns:TxStandardTimeSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TransferServiceSoap" type="tns:TransferServiceSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="TxItem">
+      <soap:operation soapAction="http://tempuri.org/TxItem" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxProductType">
+      <soap:operation soapAction="http://tempuri.org/TxProductType" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxModel">
+      <soap:operation soapAction="http://tempuri.org/TxModel" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxFlow">
+      <soap:operation soapAction="http://tempuri.org/TxFlow" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkOrderInfo">
+      <soap:operation soapAction="http://tempuri.org/TxWorkOrderInfo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkOrderInsertAndStart">
+      <soap:operation soapAction="http://tempuri.org/TxWorkOrderInsertAndStart" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PassStation">
+      <soap:operation soapAction="http://tempuri.org/PassStation" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkManpower">
+      <soap:operation soapAction="http://tempuri.org/TxWorkManpower" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RvSensorByIp">
+      <soap:operation soapAction="http://tempuri.org/RvSensorByIp" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxSensorLog">
+      <soap:operation soapAction="http://tempuri.org/TxSensorLog" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RvWoYieldData">
+      <soap:operation soapAction="http://tempuri.org/RvWoYieldData" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxStandardTime">
+      <soap:operation soapAction="http://tempuri.org/TxStandardTime" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="TransferServiceSoap12" type="tns:TransferServiceSoap">
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="TxItem">
+      <soap12:operation soapAction="http://tempuri.org/TxItem" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxProductType">
+      <soap12:operation soapAction="http://tempuri.org/TxProductType" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxModel">
+      <soap12:operation soapAction="http://tempuri.org/TxModel" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxFlow">
+      <soap12:operation soapAction="http://tempuri.org/TxFlow" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkOrderInfo">
+      <soap12:operation soapAction="http://tempuri.org/TxWorkOrderInfo" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkOrderInsertAndStart">
+      <soap12:operation soapAction="http://tempuri.org/TxWorkOrderInsertAndStart" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PassStation">
+      <soap12:operation soapAction="http://tempuri.org/PassStation" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxWorkManpower">
+      <soap12:operation soapAction="http://tempuri.org/TxWorkManpower" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RvSensorByIp">
+      <soap12:operation soapAction="http://tempuri.org/RvSensorByIp" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxSensorLog">
+      <soap12:operation soapAction="http://tempuri.org/TxSensorLog" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RvWoYieldData">
+      <soap12:operation soapAction="http://tempuri.org/RvWoYieldData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="TxStandardTime">
+      <soap12:operation soapAction="http://tempuri.org/TxStandardTime" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="TransferService">
+    <wsdl:port name="TransferServiceSoap" binding="tns:TransferServiceSoap">
+      <soap:address location="http://192.168.4.200/AMES/Service/TransferService.asmx" />
+    </wsdl:port>
+    <wsdl:port name="TransferServiceSoap12" binding="tns:TransferServiceSoap12">
+      <soap12:address location="http://192.168.4.200/AMES/Service/TransferService.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
